@@ -497,6 +497,73 @@
   }
   .footer-logo span { color: var(--accent); }
 
+  /* ── CAROUSEL ── */
+  .proj-carousel { transition: height .4s cubic-bezier(.4,0,.2,1); }
+  .proj-carousel:hover { height: 400px !important; }
+  .car-btn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: rgba(255,255,255,.9); border: 1px solid var(--border);
+    border-radius: 50%; width: 32px; height: 32px;
+    font-size: 1.1rem; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .2s, transform .2s;
+    z-index: 2; color: var(--ink);
+  }
+  .car-btn:hover { background: white; transform: translateY(-50%) scale(1.1); }
+  .car-prev { left: .6rem; }
+  .car-next { right: .6rem; }
+  .car-dots {
+    position: absolute; bottom: .5rem; left: 50%; transform: translateX(-50%);
+    display: flex; gap: .35rem; z-index: 2;
+  }
+  .car-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(15,15,15,.25); cursor: pointer;
+    transition: background .2s, transform .2s;
+  }
+  .car-dot.active { background: var(--accent); transform: scale(1.3); }
+  .car-expand-hint {
+    position: absolute; top: .6rem; right: .6rem; z-index: 2;
+    background: rgba(15,15,15,.55); color: white; border-radius: .4rem;
+    font-size: .65rem; font-weight: 600; padding: .25rem .55rem;
+    display: flex; align-items: center; gap: .3rem;
+    opacity: 0; transition: opacity .2s; pointer-events: none;
+    backdrop-filter: blur(4px);
+  }
+  .proj-carousel:hover .car-expand-hint { opacity: 1; }
+
+  /* ── LIGHTBOX ── */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 9000;
+    background: rgba(0,0,0,.88); backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity .25s;
+  }
+  .lightbox.open { opacity: 1; pointer-events: all; }
+  .lightbox img {
+    max-width: 90vw; max-height: 88vh;
+    border-radius: .8rem; box-shadow: 0 24px 80px rgba(0,0,0,.5);
+    object-fit: contain;
+  }
+  .lb-close {
+    position: absolute; top: 1.2rem; right: 1.4rem;
+    background: rgba(255,255,255,.12); border: none; border-radius: 50%;
+    width: 40px; height: 40px; font-size: 1.3rem; color: white;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background .2s;
+  }
+  .lb-close:hover { background: rgba(255,255,255,.22); }
+  .lb-btn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: rgba(255,255,255,.12); border: none; border-radius: 50%;
+    width: 48px; height: 48px; font-size: 1.6rem; color: white;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background .2s;
+  }
+  .lb-btn:hover { background: rgba(255,255,255,.22); }
+  .lb-prev { left: 1.2rem; }
+  .lb-next { right: 1.2rem; }
+
   /* ── ANIMATIONS ON SCROLL ── */
   .reveal {
     opacity: 0; transform: translateY(28px);
@@ -726,17 +793,24 @@
         <span class="ptag">Gestión de equipo</span>
         <span class="ptag">Stock</span>
       </div>
-      <div class="project-visual" style="padding:1.1rem 1.5rem; height:auto; flex-wrap:wrap; gap:.5rem; justify-content:center;">
-        <div class="fv-node">Reserva online</div>
-        <div class="fv-arrow">→</div>
-        <div class="fv-node">Profesional asignado</div>
-        <div class="fv-arrow">→</div>
-        <div class="fv-node">WhatsApp ✓</div>
-        <div class="fv-arrow">→</div>
-        <div class="fv-node">Venta registrada</div>
-        <div class="fv-arrow">→</div>
-        <div class="fv-node">Liquidación 💰</div>
-        <div class="whatsapp-badge" style="position:relative; bottom:auto; right:auto; margin:0 auto;">
+      <a href="https://saas-turnos-frontend-mvp.vercel.app/" target="_blank" style="display:inline-flex; align-items:center; gap:.4rem; margin-top:1rem; font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none; border-bottom:1px solid rgba(26,86,232,.3); padding-bottom:.1rem; transition:border-color .2s;">Ver sitio →</a>
+      <div class="proj-carousel" id="carousel-peluk" style="position:relative; margin:1.2rem -2rem -2rem; overflow:hidden; border-top:1px solid var(--border); background:#f0f4ff; height:220px; cursor:zoom-in;">
+        <div class="carousel-track" style="display:flex; height:100%; transition:transform .35s ease;">
+          <img src="deb.png"  alt="UI 1" style="min-width:100%; height:100%; object-fit:contain; object-position:top; background:#f0f4ff;">
+          <img src="deb2.png" alt="UI 2" style="min-width:100%; height:100%; object-fit:contain; object-position:top; background:#f0f4ff;">
+          <img src="deb3.png" alt="UI 3" style="min-width:100%; height:100%; object-fit:contain; object-position:top; background:#f0f4ff;">
+          <img src="deb4.png" alt="UI 4" style="min-width:100%; height:100%; object-fit:contain; object-position:top; background:#f0f4ff;">
+        </div>
+        <div class="car-expand-hint">⤢ Click para expandir</div>
+        <button class="car-btn car-prev" onclick="carMove('carousel-peluk',-1)" aria-label="Anterior">‹</button>
+        <button class="car-btn car-next" onclick="carMove('carousel-peluk', 1)" aria-label="Siguiente">›</button>
+        <div class="car-dots" id="dots-carousel-peluk">
+          <span class="car-dot active" onclick="carGo('carousel-peluk',0)"></span>
+          <span class="car-dot" onclick="carGo('carousel-peluk',1)"></span>
+          <span class="car-dot" onclick="carGo('carousel-peluk',2)"></span>
+          <span class="car-dot" onclick="carGo('carousel-peluk',3)"></span>
+        </div>
+        <div class="whatsapp-badge">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           En producción
         </div>
@@ -833,6 +907,14 @@
   </div>
 </section>
 
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="lbClose(event)">
+  <button class="lb-close" onclick="lbClose()">✕</button>
+  <button class="lb-btn lb-prev" onclick="lbMove(-1);event.stopPropagation()">‹</button>
+  <img id="lb-img" src="" alt="">
+  <button class="lb-btn lb-next" onclick="lbMove(1);event.stopPropagation()">›</button>
+</div>
+
 <!-- FOOTER -->
 <footer>
   <a href="#" class="footer-logo">juanxbini<span>.</span>dev</a>
@@ -841,6 +923,56 @@
 </footer>
 
 <script>
+  // Carousel
+  const carState = {};
+  function carInit(id) {
+    if (!carState[id]) carState[id] = { idx: 0 };
+  }
+  function carGo(id, idx) {
+    carInit(id);
+    const wrap = document.getElementById(id);
+    const track = wrap.querySelector('.carousel-track');
+    const imgs = track.querySelectorAll('img');
+    carState[id].idx = (idx + imgs.length) % imgs.length;
+    track.style.transform = `translateX(-${carState[id].idx * 100}%)`;
+    wrap.querySelectorAll('.car-dot').forEach((d,i) => d.classList.toggle('active', i === carState[id].idx));
+  }
+  function carMove(id, dir) { carInit(id); carGo(id, carState[id].idx + dir); }
+
+  // Open lightbox on carousel click
+  document.querySelectorAll('.proj-carousel').forEach(wrap => {
+    wrap.addEventListener('click', e => {
+      if (e.target.closest('.car-btn') || e.target.closest('.car-dots') || e.target.closest('.whatsapp-badge')) return;
+      const id = wrap.id;
+      carInit(id);
+      const imgs = [...wrap.querySelectorAll('.carousel-track img')].map(i => i.src);
+      lbOpen(imgs, carState[id].idx);
+    });
+  });
+
+  // Lightbox
+  let lbImgs = [], lbIdx = 0;
+  function lbOpen(imgs, idx) {
+    lbImgs = imgs; lbIdx = idx;
+    document.getElementById('lb-img').src = lbImgs[lbIdx];
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function lbClose(e) {
+    if (e && e.target !== document.getElementById('lightbox') && e.target !== document.querySelector('.lb-close')) return;
+    document.getElementById('lightbox').classList.remove('open');
+  }
+  function lbMove(dir) {
+    lbIdx = (lbIdx + dir + lbImgs.length) % lbImgs.length;
+    document.getElementById('lb-img').src = lbImgs[lbIdx];
+  }
+  document.addEventListener('keydown', e => {
+    const lb = document.getElementById('lightbox');
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') lb.classList.remove('open');
+    if (e.key === 'ArrowLeft') lbMove(-1);
+    if (e.key === 'ArrowRight') lbMove(1);
+  });
+
   // Custom cursor
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursor-ring');
