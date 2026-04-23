@@ -498,8 +498,7 @@
   .footer-logo span { color: var(--accent); }
 
   /* ── CAROUSEL ── */
-  .proj-carousel { transition: height .4s cubic-bezier(.4,0,.2,1); }
-  .proj-carousel:hover { height: 400px !important; }
+  .proj-carousel { transition: height .35s cubic-bezier(.4,0,.2,1); }
   .car-btn {
     position: absolute; top: 50%; transform: translateY(-50%);
     background: rgba(255,255,255,.9); border: 1px solid var(--border);
@@ -794,12 +793,12 @@
         <span class="ptag">Stock</span>
       </div>
       <a href="https://saas-turnos-frontend-mvp.vercel.app/" target="_blank" style="display:inline-flex; align-items:center; gap:.4rem; margin-top:1rem; font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none; border-bottom:1px solid rgba(26,86,232,.3); padding-bottom:.1rem; transition:border-color .2s;">Ver sitio →</a>
-      <div class="proj-carousel" id="carousel-peluk" style="position:relative; margin:1.2rem -2rem -2rem; overflow:hidden; border-top:1px solid var(--border); background:#f0f4ff; height:220px; cursor:zoom-in;">
-        <div class="carousel-track" style="display:flex; height:100%; transition:transform .35s ease;">
-          <img src="deb.png"  alt="UI 1" style="min-width:100%; height:100%; object-fit:contain; object-position:top; background:#f0f4ff;">
-          <img src="deb2.png" alt="UI 2" style="min-width:100%; height:100%; object-fit:contain; object-position:top; background:#f0f4ff;">
-          <img src="deb3.png" alt="UI 3" style="min-width:100%; height:100%; object-fit:contain; object-position:top; background:#f0f4ff;">
-          <img src="deb4.png" alt="UI 4" style="min-width:100%; height:100%; object-fit:contain; object-position:top; background:#f0f4ff;">
+      <div class="proj-carousel" id="carousel-peluk" style="position:relative; margin:1.2rem -2rem -2rem; overflow:hidden; border-top:1px solid var(--border); background:#f0f4ff; cursor:zoom-in;">
+        <div class="carousel-track" style="display:flex; align-items:flex-start; transition:transform .35s ease;">
+          <img src="deb.png"  alt="UI 1" style="min-width:100%; max-width:100%; height:auto; display:block; background:#f0f4ff;">
+          <img src="deb2.png" alt="UI 2" style="min-width:100%; max-width:100%; height:auto; display:block; background:#f0f4ff;">
+          <img src="deb3.png" alt="UI 3" style="min-width:100%; max-width:100%; height:auto; display:block; background:#f0f4ff;">
+          <img src="deb4.png" alt="UI 4" style="min-width:100%; max-width:100%; height:auto; display:block; background:#f0f4ff;">
         </div>
         <div class="car-expand-hint">⤢ Click para expandir</div>
         <button class="car-btn car-prev" onclick="carMove('carousel-peluk',-1)" aria-label="Anterior">‹</button>
@@ -928,16 +927,27 @@
   function carInit(id) {
     if (!carState[id]) carState[id] = { idx: 0 };
   }
+  function carAdaptHeight(wrap, img) {
+    const set = () => {
+      if (img.naturalWidth) wrap.style.height = Math.round(wrap.offsetWidth * img.naturalHeight / img.naturalWidth) + 'px';
+    };
+    if (img.complete && img.naturalWidth) set();
+    else img.addEventListener('load', set, { once: true });
+  }
   function carGo(id, idx) {
     carInit(id);
     const wrap = document.getElementById(id);
     const track = wrap.querySelector('.carousel-track');
-    const imgs = track.querySelectorAll('img');
+    const imgs = [...track.querySelectorAll('img')];
     carState[id].idx = (idx + imgs.length) % imgs.length;
     track.style.transform = `translateX(-${carState[id].idx * 100}%)`;
     wrap.querySelectorAll('.car-dot').forEach((d,i) => d.classList.toggle('active', i === carState[id].idx));
+    carAdaptHeight(wrap, imgs[carState[id].idx]);
   }
   function carMove(id, dir) { carInit(id); carGo(id, carState[id].idx + dir); }
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.proj-carousel').forEach(w => carGo(w.id, 0));
+  });
 
   // Open lightbox on carousel click
   document.querySelectorAll('.proj-carousel').forEach(wrap => {
